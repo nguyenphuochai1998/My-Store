@@ -45,6 +45,8 @@ flutter:
     - ic_store.png
     - ic_lock.png
     - ic_user.png
+    - ic_user2.png
+    - ic_password.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

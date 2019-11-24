@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_my_store/UI/Page_Register.dart';
 class Page_Login extends StatefulWidget{
   @override
   _PageLoginState createState() => _PageLoginState();
@@ -19,7 +20,7 @@ class _PageLoginState extends State<Page_Login>{
              child: Column(
                children: <Widget>[
                  SizedBox(
-                   height: 90,
+                   height: 60,
                  ),
                  Container(
                    width: 150,
@@ -74,7 +75,7 @@ class _PageLoginState extends State<Page_Login>{
                    constraints: BoxConstraints.loose(Size(double.infinity, 50)),
                    alignment: AlignmentDirectional.centerEnd,
                    child: Padding(
-                     padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                      child: Text(
                        "Quên Mật Khẩu?",
                        style: TextStyle(fontSize: 16, color: Color(0xff606470)),
@@ -82,7 +83,7 @@ class _PageLoginState extends State<Page_Login>{
                    ),
                  ),
                  Padding(
-                   padding: const EdgeInsets.fromLTRB(0, 30, 0, 40),
+                   padding: const EdgeInsets.fromLTRB(0, 10, 0, 30),
                    child: SizedBox(
                      width: double.infinity,
                      height: 52,
@@ -102,7 +103,7 @@ class _PageLoginState extends State<Page_Login>{
                    ),
                  ),
                  Padding(
-                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 40),
+                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
                    child: RichText(
                      text: TextSpan(
                          text: "Đăng kí? ",
@@ -111,7 +112,10 @@ class _PageLoginState extends State<Page_Login>{
                            TextSpan(
                                recognizer: TapGestureRecognizer()
                                  ..onTap = () {
-                                   //chuyen man hinh qua dang ki
+                                   Navigator.push(
+                                       context,
+                                       MaterialPageRoute(
+                                           builder: (context) => RegisterPage()));
                                  },
                                text: "Bấm vào để đăng kí",
                                style: TextStyle(
