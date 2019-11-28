@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_my_store/UI/Page_Register.dart';
+import 'package:flutter_app_my_store/Bloc/Login_bloc.dart';
 class Page_Login extends StatefulWidget{
   @override
   _PageLoginState createState() => _PageLoginState();
@@ -9,6 +10,14 @@ class Page_Login extends StatefulWidget{
 class _PageLoginState extends State<Page_Login>{
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
+  LoginBloc bloc=new LoginBloc();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    bloc.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
      return Scaffold(
@@ -41,12 +50,15 @@ class _PageLoginState extends State<Page_Login>{
                  ),
                  Padding(
                    padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
-                   child: TextField(
+                   child: StreamBuilder(
+                     stream: bloc.userStream ,
+                     builder: (context,snapshot) => TextField(
                      controller: _userController,
-                 
+
                      style: TextStyle(fontSize: 18, color: Color(0xFFA8DBA8)),
                      decoration: InputDecoration(
                          labelText: "Email hoặc SĐT",
+                         errorText: snapshot.hasError ? snapshot.error:null,
                          prefixIcon: Container(
                              padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
                              width: 50, child: Image.asset("ic_user.png")),
@@ -55,20 +67,25 @@ class _PageLoginState extends State<Page_Login>{
                              BorderSide(color: Color(0xFFA8DBA8), width: 1),
                              borderRadius: BorderRadius.all(Radius.circular(6)))),
                    ),
+                   )
                  ),
-                 TextField(
-                   controller: _passController,
-                   style: TextStyle(fontSize: 18, color: Color(0xFFA8DBA8)),
-                   obscureText: true,
-                   decoration: InputDecoration(
-                       labelText: "Mật Khẩu",
-                       prefixIcon: Container(
-                           padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
-                           width: 50, child: Image.asset("ic_lock.png")),
-                       border: OutlineInputBorder(
-                           borderSide:
-                           BorderSide(color: Color(0xFFA8DBA8), width: 1),
-                           borderRadius: BorderRadius.all(Radius.circular(6)))),
+                 StreamBuilder(
+                   stream: bloc.passStream,
+                   builder: (context,snapshot) =>TextField(
+                     controller: _passController,
+                     style: TextStyle(fontSize: 18, color: Color(0xFFA8DBA8)),
+                     obscureText: true,
+                     decoration: InputDecoration(
+                         labelText: "Mật Khẩu",
+                         errorText: snapshot.hasError ? snapshot.error:null,
+                         prefixIcon: Container(
+                             padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
+                             width: 50, child: Image.asset("ic_lock.png")),
+                         border: OutlineInputBorder(
+                             borderSide:
+                             BorderSide(color: Color(0xFFA8DBA8), width: 1),
+                             borderRadius: BorderRadius.all(Radius.circular(6)))),
+                   ),
                  ),
                  Container(
 
@@ -88,9 +105,7 @@ class _PageLoginState extends State<Page_Login>{
                      width: double.infinity,
                      height: 52,
                      child: RaisedButton(
-                       onPressed: (){
-
-                     },
+                       onPressed:_LoginClick,
                        child: Text(
                          "Đăng Nhập",
                          style: TextStyle(color: Colors.white, fontSize: 18),
@@ -131,6 +146,11 @@ class _PageLoginState extends State<Page_Login>{
 
          ),
        );
+  }
+  void _LoginClick(){
+    if(bloc.isValOk(_userController.text,_passController.text)){
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterPage()));
+    }
   }
 
 }
