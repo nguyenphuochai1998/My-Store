@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_my_store/Bloc/Register_bloc.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -6,15 +7,19 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  RegisterBloc bloc = new RegisterBloc();
 
 
   TextEditingController _nameController = new TextEditingController();
-  TextEditingController _emailController = new TextEditingController();
   TextEditingController _passController = new TextEditingController();
-  TextEditingController _phoneController = new TextEditingController();
+  TextEditingController _userController = new TextEditingController();
+  TextEditingController _passAController = new TextEditingController();
+
 
   @override
   void dispose() {
+    bloc.dispose();
+
 
     super.dispose();
   }
@@ -51,6 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 80, 0, 20),
                 child: StreamBuilder(
+                    stream:bloc.nameStream,
 
                     builder: (context, snapshot) => TextField(
                       controller: _nameController,
@@ -70,9 +76,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     )),
               ),
               StreamBuilder(
+                  stream: bloc.userStream,
+
 
                   builder: (context, snapshot) => TextField(
-                    controller: _phoneController,
+                    controller: _userController,
                     style: TextStyle(fontSize: 18, color: Colors.black),
                     decoration: InputDecoration(
                         labelText: "SĐT hoặc Email",
@@ -90,6 +98,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                 child: StreamBuilder(
+                    stream: bloc.passStream,
 
                     builder: (context, snapshot) => TextField(
                       controller: _passController,
@@ -109,9 +118,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     )),
               ),
               StreamBuilder(
+                  stream: bloc.passAStream,
 
                   builder: (context, snapshot) => TextField(
-                    controller: _passController,
+                    controller: _passAController,
                     obscureText: true,
                     style: TextStyle(fontSize: 18, color: Colors.black),
                     decoration: InputDecoration(
@@ -133,7 +143,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: double.infinity,
                   height: 52,
                   child: RaisedButton(
-                    onPressed: (){},
+                    onPressed: _onClickRegister,
                     child: Text(
                       "Đăng Kí",
                       style: TextStyle(color: Colors.white, fontSize: 18),
@@ -163,6 +173,11 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+  void _onClickRegister(){
+    if(bloc.isValOk(_nameController.text, _userController.text, _passController.text, _passAController.text)){
+
+    }
   }
 
 

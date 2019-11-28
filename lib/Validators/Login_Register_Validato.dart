@@ -21,6 +21,10 @@ class LoginRegisterValidato{
   }
   // kiem tra mat khau
   static bool isPass(String value){
-    return value.length >6;
+    return value.length >=6;
+  }
+  // kiem tra 2 pass
+  static bool isPassAOk(String pass,String passA){
+    return pass == passA;
   }
 }
