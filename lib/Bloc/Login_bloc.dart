@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_app_my_store/Validators/Login_Register_Validato.dart';
+import 'package:flutter_app_my_store/FireBase/Fire_Auth.dart';
 
 
 class LoginBloc{
@@ -9,10 +10,11 @@ class LoginBloc{
   Stream get userStream => _userController.stream;
   Stream get passStream => _passController.stream;
 
+  FireAuth _fireAuth = new FireAuth();
   bool isValOk(String user,String pass){
     if(!LoginRegisterValidato.isPhoneNumber(user)){
       if(!LoginRegisterValidato.isEmail(user)){
-        _userController.sink.addError("Nhập SĐT Hoặc Email!");
+        _userController.sink.addError("Nhập Email!");
         return false;
       }
     }
@@ -24,6 +26,7 @@ class LoginBloc{
     _userController.add("ok");
     return true;
   }
+
 
   void dispose(){
     _userController.close();

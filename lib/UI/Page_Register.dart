@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_my_store/Bloc/Register_bloc.dart';
+import 'package:flutter_app_my_store/UI/Dialog/Msg_Dialog.dart';
+import 'package:flutter_app_my_store/UI/Dialog/loading_dialog.dart';
+import 'package:flutter_app_my_store/UI/Page_Login.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -14,6 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _passController = new TextEditingController();
   TextEditingController _userController = new TextEditingController();
   TextEditingController _passAController = new TextEditingController();
+  TextEditingController _phoneController = new TextEditingController();
 
 
   @override
@@ -83,7 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _userController,
                     style: TextStyle(fontSize: 18, color: Colors.black),
                     decoration: InputDecoration(
-                        labelText: "SĐT hoặc Email",
+                        labelText: "Email",
                         errorText:
                         snapshot.hasError ? snapshot.error : null,
                         prefixIcon: Container(
@@ -96,11 +100,35 @@ class _RegisterPageState extends State<RegisterPage> {
                             BorderRadius.all(Radius.circular(6)))),
                   )),
               Padding(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                child: StreamBuilder(
+                    stream: bloc.phoneAStream,
+
+                    builder: (context, snapshot) => TextField(
+
+                      controller: _phoneController,
+                      style: TextStyle(fontSize: 18, color: Colors.black),
+                      decoration: InputDecoration(
+                          labelText: "SĐT",
+                          errorText:
+                          snapshot.hasError ? snapshot.error : null,
+                          prefixIcon: Container(
+                              padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
+                              width: 50, child: Image.asset("ic_user2.png")),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color(0xffCED0D2), width: 1),
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(6)))),
+                    )),
+              ),
+              Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                 child: StreamBuilder(
                     stream: bloc.passStream,
 
                     builder: (context, snapshot) => TextField(
+                      obscureText: true,
                       controller: _passController,
                       style: TextStyle(fontSize: 18, color: Colors.black),
                       decoration: InputDecoration(
@@ -175,8 +203,21 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
   void _onClickRegister(){
-    if(bloc.isValOk(_nameController.text, _userController.text, _passController.text, _passAController.text)){
+    if(bloc.isValOk(_nameController.text, _userController.text, _passController.text, _passAController.text,_phoneController.text)){
+        LoadingDialog.showLoadingDialog(context, "Đang tiến hành đăng kí...");
+        bloc.Register(_nameController.text,_phoneController.text, _userController.text, _userController.text,
+            (){
+              LoadingDialog.hideLoadingDialog(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Page_Login()));
 
+            },
+            (msg){
+              LoadingDialog.hideLoadingDialog(context);
+              MsgDialog.showMsgDialog(context, "Lỗi..!!!", msg.toString());
+            });
     }
   }
 
