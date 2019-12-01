@@ -26,6 +26,9 @@ class LoginBloc{
     _userController.add("ok");
     return true;
   }
+  void Login(String user,String pass,Function onSuccsess,Function(String) onErr){
+    _fireAuth.Login(user, pass, onSuccsess, onErr);
+  }
 
 
   void dispose(){

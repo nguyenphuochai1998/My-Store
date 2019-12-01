@@ -1,5 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_my_store/UI/Dialog/Msg_Dialog.dart';
+import 'package:flutter_app_my_store/UI/Dialog/loading_dialog.dart';
+import 'package:flutter_app_my_store/UI/Page_Home.dart';
 import 'package:flutter_app_my_store/UI/Page_Register.dart';
 import 'package:flutter_app_my_store/Bloc/Login_bloc.dart';
 class Page_Login extends StatefulWidget{
@@ -149,7 +152,17 @@ class _PageLoginState extends State<Page_Login>{
   }
   void _LoginClick(){
     if(bloc.isValOk(_userController.text,_passController.text)){
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterPage()));
+      LoadingDialog.showLoadingDialog(context, "Vui Lòng Đợi...!");
+      bloc.Login(_userController.text, _passController.text,
+          (){
+        LoadingDialog.hideLoadingDialog(context);
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_Home()));
+          }, (err){
+        LoadingDialog.hideLoadingDialog(context);
+        MsgDialog.showMsgDialog(context, "Thông Báo",err);
+
+          });
+
     }
   }
 

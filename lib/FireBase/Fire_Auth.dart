@@ -26,19 +26,44 @@ class FireAuth{
 
     }).catchError((err){
       onRegisterErr("vui lòng thử đăng kí lại! cảm ơn");
-      print("k gowir leen dc");
+
     });
   }
   void OnErrRegister(String codeErr,Function(String) onRegisterErr){
     switch(codeErr){
       case "ERROR_EMAIL_ALREADY_IN_USE" :
-        onRegisterErr("Đã có tài khoảng sử dụng email này!");
+        onRegisterErr("Đã có tài khoản sử dụng email này!");
         break;
       case "ERROR_OPERATION_NOT_ALLOWED" :
-        onRegisterErr("Ứng dụng không cho phép sử dụng tài khoảng nặt danh!");
+        onRegisterErr("Ứng dụng không cho phép sử dụng tài khoản nặt danh!");
 
     }
 
 
+  }
+  void Login(String user,String pass,Function onSuccsess,Function(String) onErr){
+    _auth.signInWithEmailAndPassword(email: user, password: pass)
+        .then((user){
+          onSuccsess();
+    })
+        .catchError((err){
+          print(err.code);
+          OnErrLogin(err.code, onErr);
+
+    });
+  }
+  void OnErrLogin(String codeErr,Function(String) onLoginErr){
+    switch(codeErr){
+      case "ERROR_USER_DISABLED" :
+        onLoginErr("Tài khoản này đã bị khóa!");
+        break;
+      case "ERROR_OPERATION_NOT_ALLOWED" :
+        onLoginErr("Tài khoản này chưa được kích hoạt bởi Google!");
+        break;
+      case "ERROR_WRONG_PASSWORD" :
+        onLoginErr("Có lẽ mật khẩu không đúng vui lòng kiểm tra lại!");
+        break;
+
+    }
   }
 }

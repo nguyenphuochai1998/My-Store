@@ -204,8 +204,8 @@ class _RegisterPageState extends State<RegisterPage> {
   }
   void _onClickRegister(){
     if(bloc.isValOk(_nameController.text, _userController.text, _passController.text, _passAController.text,_phoneController.text)){
-        LoadingDialog.showLoadingDialog(context, "Đang tiến hành đăng kí...");
-        bloc.Register(_nameController.text,_phoneController.text, _userController.text, _userController.text,
+        LoadingDialog.showLoadingDialog(context, "Đang tiến hành đăng kí..."+"\n"+"Vui lòng đợi..."+"\n"+"Cảm ơn");
+        bloc.Register(_nameController.text,_phoneController.text, _userController.text, _passController.text,
             (){
               LoadingDialog.hideLoadingDialog(context);
               Navigator.push(
