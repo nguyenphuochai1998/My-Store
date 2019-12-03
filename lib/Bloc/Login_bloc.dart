@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app_my_store/Validators/Login_Register_Validato.dart';
 import 'package:flutter_app_my_store/FireBase/Fire_Auth.dart';
 
@@ -26,7 +27,7 @@ class LoginBloc{
     _userController.add("ok");
     return true;
   }
-  void Login(String user,String pass,Function onSuccsess,Function(String) onErr){
+  void Login(String user,String pass,Function(FirebaseUser) onSuccsess,Function(String) onErr){
     _fireAuth.Login(user, pass, onSuccsess, onErr);
   }
 
