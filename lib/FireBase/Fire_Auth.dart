@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 class FireAuth{
   final FirebaseAuth _auth = FirebaseAuth.instance;
    FirebaseUser User;
@@ -42,6 +41,7 @@ class FireAuth{
 
     });
   }
+
   void OnErrRegister(String codeErr,Function(String) onRegisterErr){
     switch(codeErr){
       case "ERROR_EMAIL_ALREADY_IN_USE" :

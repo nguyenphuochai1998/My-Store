@@ -15,6 +15,23 @@ class Page_Home extends StatefulWidget{
 
 }
 class _PageHomeState extends State<Page_Home>{
+  var _colors =[
+    Colors.blue,
+    Colors.green,
+    Colors.amber,
+    Colors.redAccent
+
+  ];
+  var _nameTag =[
+    "Tính Tiền",
+    "Quản Lý Hàng Hóa",
+    "Lịch Sử Bán Hàng",
+    "Sổ Nợ"
+
+  ];
+  var _icon =[
+
+  ];
 
 
   @override
@@ -26,6 +43,7 @@ class _PageHomeState extends State<Page_Home>{
         width: _size.width,
         child: Stack(
           children: <Widget>[
+
             Container(
               width: _size.width,
               height: _size.height/3,
@@ -46,7 +64,7 @@ class _PageHomeState extends State<Page_Home>{
                     style: TextStyle(
                         fontSize: 20,
                         color: Color(0xFFffffff),
-                        fontFamily: 'Poppins',
+
                         fontWeight: FontWeight.w700,
                         fontStyle: FontStyle.italic
 
@@ -73,13 +91,107 @@ class _PageHomeState extends State<Page_Home>{
 
                 ],
               )
-            )
+
+            ),
+            Container(
+                margin: EdgeInsets.only(top:_size.height/3),
+
+                child: MenuHome()
+
+            ),
+
 
           ],
         ),
       )
 
     );
+
+
   }
+
+  Widget _BuildTagName({int parentIndex}){
+
+    return Card(
+      color: _colors[parentIndex],
+      child: Column(
+        children: <Widget>[
+          Text(_nameTag[parentIndex])
+        ],
+      ),
+    );
+  }
+  Widget MenuHome() {
+    return GridView.builder(
+
+        itemCount: _nameTag.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2),
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+              onTap: () {
+                MenuHomeOnTap(index);
+              },
+              child: Card(
+                color: _colors[index],
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Image.asset("ic_store.png", height: 70.0, width: 70.0,),
+
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(_nameTag[index], style: new TextStyle(
+                          fontSize: 16,
+                          height: 1.2,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white), textAlign: TextAlign.center,),
+                    )
+                  ],
+                ),
+              )
+          );
+        }
+    );
+  }
+  void MenuHomeOnTap(int index) {
+    switch (index) {
+      case 0 :
+        {
+          // tinh tien
+
+
+
+        }
+        break;
+      case 1 :
+        {
+          ///qr
+
+
+        }
+        break;
+      case 2 :
+        {
+          /// khi bam vao Sorting Garbage
+
+        }
+        break;
+      case 3 :
+        {
+          /// khi bam vao friends
+
+        }
+        break;
+      default:
+        {
+          print("Invalid choice");
+        }
+        break;
+    }
+  }
+
 
 }
