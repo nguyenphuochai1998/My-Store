@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_app_my_store/FireBase/FireStore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_app_my_store/FireBase/Fire_Auth.dart';
+import 'package:flutter_app_my_store/UI/Page_ManagementProduct.dart';
+
 
 class Page_Home extends StatefulWidget{
 
@@ -15,6 +17,7 @@ class Page_Home extends StatefulWidget{
 
 }
 class _PageHomeState extends State<Page_Home>{
+
   var _colors =[
     Colors.blue,
     Colors.green,
@@ -168,7 +171,10 @@ class _PageHomeState extends State<Page_Home>{
         break;
       case 1 :
         {
-          ///qr
+          //quan ly hang hoa
+
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_ManagementProduct(user: widget.user)));
+
 
 
         }
