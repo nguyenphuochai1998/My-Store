@@ -23,10 +23,7 @@ dependencies:
   cloud_firestore: ^0.12.10+2
   flutter_slidable: ^0.5.4
   flutter_barcode_scanner: ^0.1.7
-
-
-
-
+  easy_dialog: ^1.0.5
 
 
 
