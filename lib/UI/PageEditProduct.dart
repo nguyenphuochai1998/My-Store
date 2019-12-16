@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,35 +7,46 @@ import 'package:flutter_app_my_store/UI/Dialog/Error_Dialog.dart';
 import 'package:flutter_app_my_store/UI/Dialog/notification_Dialog.dart';
 import 'package:flutter_app_my_store/UI/Page_ManagementProduct.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:easy_dialog/easy_dialog.dart';
 
 
-class Page_CreateProduct extends StatefulWidget{
 
-  const Page_CreateProduct({Key key, this.user}) : super(key: key);
+class Page_EditProduct extends StatefulWidget{
+
+  const Page_EditProduct({Key key, this.user,this.doc}) : super(key: key);
   final FirebaseUser user;
+  final DocumentSnapshot doc;
 
 
 
   @override
-  _PageCreateProduct createState() => _PageCreateProduct();
+  _PageEditProduct createState() => _PageEditProduct();
 
 }
-class _PageCreateProduct extends State<Page_CreateProduct>{
+class _PageEditProduct extends State<Page_EditProduct>{
   FireStoreUser storeUser = new FireStoreUser();
   String _counter;
   final TextEditingController _nameProductController = TextEditingController();
   final TextEditingController _qrCodeProductController = TextEditingController();
   final TextEditingController _quantityProductController = TextEditingController();
   final TextEditingController _priceProductController = TextEditingController();
+  @override
+  void initState() {
+    // lay thong tin tu product trc
+    _qrCodeProductController.text = widget.doc['qrCode'];
+    _nameProductController.text = widget.doc['name'];
+    _quantityProductController.text = widget.doc['quantity'].toString();
+    _priceProductController.text = widget.doc['price'].toString();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+
     Size _size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
 
-          title: Text("Tạo Mặt Hàng Mới"),
+          title: Text("Sửa thông tin mặt hàng!"),
         ),
         body: ListView(
           children: <Widget>[
@@ -147,23 +159,23 @@ class _PageCreateProduct extends State<Page_CreateProduct>{
                 height: 52,
                 child: RaisedButton(
                   onPressed:(){
-                    _onCreateProduct(
+                    _onEditProduct(
                         onSuccess: (txt){
                           NotificationDialog.showNotificationDialog(context: context,
-                          msg: txt,
-                            onClickOkButton: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_ManagementProduct(user: widget.user)));
-                            }
+                              msg: txt,
+                              onClickOkButton: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_ManagementProduct(user: widget.user)));
+                              }
                           );
                         },
-                      onErr: (txt){
-                        ErrorDialog.showErrorDialog(msg: txt,context: context);
+                        onErr: (txt){
+                          ErrorDialog.showErrorDialog(msg: txt,context: context);
 
-                      }
+                        }
                     );
                   },
                   child: Text(
-                    "Tạo Mặt hàng",
+                    "Sửa Thông Tin Mặt hàng",
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   color: Colors.blue,
@@ -179,8 +191,9 @@ class _PageCreateProduct extends State<Page_CreateProduct>{
 
 
   }
-  _onCreateProduct({Function(String) onSuccess,Function(String) onErr}){
-    storeUser.addProduct(userId: widget.user.uid,
+
+  _onEditProduct({Function(String) onSuccess,Function(String) onErr}){
+    storeUser.editProduct(userId: widget.user.uid,
         name: _nameProductController.text,
         quantity: int.parse(_quantityProductController.text),
         price: double.parse(_priceProductController.text),
@@ -192,7 +205,8 @@ class _PageCreateProduct extends State<Page_CreateProduct>{
         onSuccess: (txt){
           onSuccess(txt);
 
-        }
+        },
+        documentID: widget.doc.documentID
 
     );
   }

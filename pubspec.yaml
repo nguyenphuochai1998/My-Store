@@ -24,6 +24,7 @@ dependencies:
   flutter_slidable: ^0.5.4
   flutter_barcode_scanner: ^0.1.7
   easy_dialog: ^1.0.5
+  progress_dialog: ^1.2.0
 
 
 

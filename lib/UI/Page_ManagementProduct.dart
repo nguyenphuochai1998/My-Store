@@ -3,8 +3,13 @@ import 'package:flutter/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app_my_store/FireBase/FireStore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_app_my_store/UI/Dialog/loading_dialog.dart';
+import 'package:flutter_app_my_store/UI/Dialog/notification_Dialog.dart';
+import 'package:flutter_app_my_store/UI/PageEditProduct.dart';
 import 'package:flutter_app_my_store/UI/Page_CreateProduct.dart';
+import 'package:flutter_app_my_store/UI/Page_Home.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 class Page_ManagementProduct extends StatefulWidget{
 
   const Page_ManagementProduct({Key key, this.user}) : super(key: key);
@@ -23,6 +28,15 @@ class _PageManagementProduct extends State<Page_ManagementProduct>{
     Size _size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        leading: new Container(
+          child: IconButton(
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_Home(user: widget.user)));
+            },
+            icon: Icon(Icons.arrow_back),
+          ),
+        ),
+        automaticallyImplyLeading: false,
         title: Text("Quản Lý Hàng Hóa"),
       ),
       body: Container(
@@ -50,6 +64,7 @@ class _PageManagementProduct extends State<Page_ManagementProduct>{
             ),
             Container(
               margin: EdgeInsets.only(top:92),
+              // list product
               child: new StreamBuilder(
                 stream: Firestore.instance.collection('Stores').document(widget.user.uid).collection('product').snapshots(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -77,20 +92,33 @@ class _PageManagementProduct extends State<Page_ManagementProduct>{
                             ),
                             actions: <Widget>[
                               IconSlideAction(
-                                caption: 'Archive',
+                                caption: 'Sửa Mặt hàng',
                                 color: Colors.green,
                                 icon: Icons.archive,
-                                onTap: (){},
+                                onTap: (){
+                                  // edit product
+
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_EditProduct(user: widget.user,doc: document)));
+                                },
                               ),
 
                             ],
                             secondaryActions: <Widget>[
                               IconSlideAction(
-                                caption: 'Delete',
+                                caption: 'Xóa Mặt Hàng',
                                 color: Colors.redAccent,
                                 icon: Icons.delete,
                                 onTap: (){
-                                  print("xóa ${document['name']}");
+                                  LoadingDialog.showLoadingDialog(context, "Đang xóa...!");
+                                  storeUser.deleteProduct(userId: widget.user.uid,documentID: document.documentID,
+                                  onSuccess: (txt){
+                                    LoadingDialog.hideLoadingDialog(context);
+                                    NotificationDialog.showNotificationDialog(context: context,
+                                        msg: txt,onClickOkButton: (){
+                                          Navigator.of(context).pop();
+                                          });
+                                  });
+                                  print(document.documentID);
                                 },
                               ),
                             ],

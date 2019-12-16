@@ -44,11 +44,29 @@ class FireStoreUser{
 
       }
     });
-
-
-
-
-
   }
-
+  void deleteProduct({String userId,String documentID,Function(String) onSuccess,Function(String) onErr}){
+    _db.collection('Stores').document(userId).collection('product').document(documentID).delete()
+        .then((val){
+          // thanh cong
+      onSuccess("Xóa mặt hàng thành công!");
+    }).catchError((err){
+      // k thanh cong
+      onErr("Đã có lỗi khi xóa");
+    });
+  }
+  void editProduct({String userId,String name,String qrCode,int quantity,double price,Function(String) onSuccess,Function(String) onErr,String documentID}){
+    var product = {
+      'name':name,
+      'quantity':quantity,
+      'price':price,
+      'qrCode':qrCode
+    };
+    _db.collection('Stores').document(userId).collection('product').document(documentID).updateData(product)
+    .then((val){
+      onSuccess("sửa dữ liệu thành công!");
+    }).catchError((err){
+      onErr("lỗi ${err}");
+    });
+  }
 }
