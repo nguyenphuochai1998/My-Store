@@ -40,6 +40,7 @@ class FireAuth{
       onRegisterErr("vui lòng thử đăng kí lại! cảm ơn");
 
     });
+
   }
 
   void OnErrRegister(String codeErr,Function(String) onRegisterErr){

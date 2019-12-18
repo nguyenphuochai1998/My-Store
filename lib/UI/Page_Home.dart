@@ -1,8 +1,12 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app_my_store/FireBase/FireStore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_app_my_store/UI/Dialog/notification_Dialog.dart';
+import 'package:flutter_app_my_store/UI/Page_Charge.dart';
 import 'package:flutter_app_my_store/UI/Page_ManagementProduct.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 
 class Page_Home extends StatefulWidget{
@@ -37,77 +41,84 @@ class _PageHomeState extends State<Page_Home>{
   ];
 
 
+
   @override
   Widget build(BuildContext context) {
+
+
     Size _size = MediaQuery.of(context).size;
-    return Scaffold(
-      body: Container(
-        height: _size.height,
-        width: _size.width,
-        child: Stack(
-          children: <Widget>[
 
-            Container(
-              width: _size.width,
-              height: _size.height/3,
+    return MaterialApp(
+      home: Scaffold(
+
+          body: Container(
+            height: _size.height,
+            width: _size.width,
+            child: Stack(
+              children: <Widget>[
+
+                Container(
+                    width: _size.width,
+                    height: _size.height/3,
 
 
-              decoration: BoxDecoration(
+                    decoration: BoxDecoration(
 
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30),bottomRight: Radius.circular(30)),
-                color: Color(0xFF33B958)
-              ),
-              child: new Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: _size.height/16,
-                  ),
-                  Text(
-                    "Xin Chào ${widget.user.displayName}",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0xFFffffff),
-
-                        fontWeight: FontWeight.w700,
-                        fontStyle: FontStyle.italic
-
+                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30),bottomRight: Radius.circular(30)),
+                        color: Color(0xFF33B958)
                     ),
-                  ),
-
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(2, 10, 0, 10),
-                        child: Text(
-                          "Doanh Thu Hôm Nay: 0Đ",
+                    child: new Column(
+                      children: <Widget>[
+                        SizedBox(
+                          height: _size.height/16,
+                        ),
+                        Text(
+                          "Xin Chào ${widget.user.displayName}",
                           style: TextStyle(
                               fontSize: 20,
                               color: Color(0xFFffffff),
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w700
+
+                              fontWeight: FontWeight.w700,
+                              fontStyle: FontStyle.italic
 
                           ),
                         ),
-                      )
-                    ],
-                  )
 
-                ],
-              )
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(2, 10, 0, 10),
+                              child: Text(
+                                "Doanh Thu Hôm Nay: 0Đ",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Color(0xFFffffff),
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w700
 
+                                ),
+                              ),
+                            )
+                          ],
+                        )
+
+                      ],
+                    )
+
+                ),
+                Container(
+                    margin: EdgeInsets.only(top:_size.height/3),
+
+                    child: MenuHome()
+
+                ),
+
+
+              ],
             ),
-            Container(
-                margin: EdgeInsets.only(top:_size.height/3),
+          )
 
-                child: MenuHome()
-
-            ),
-
-
-          ],
-        ),
-      )
-
+      ),
     );
 
 
@@ -163,10 +174,8 @@ class _PageHomeState extends State<Page_Home>{
     switch (index) {
       case 0 :
         {
-          // tinh tien
-
-
-
+            // tinh tien
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_Charge(user: widget.user)));
         }
         break;
       case 1 :
@@ -181,7 +190,7 @@ class _PageHomeState extends State<Page_Home>{
         break;
       case 2 :
         {
-          /// khi bam vao Sorting Garbage
+
 
         }
         break;
@@ -198,6 +207,7 @@ class _PageHomeState extends State<Page_Home>{
         break;
     }
   }
+
 
 
 }

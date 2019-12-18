@@ -152,14 +152,14 @@ class _PageLoginState extends State<Page_Login>{
   }
   void _LoginClick(){
     if(bloc.isValOk(_userController.text,_passController.text)){
-      LoadingDialog.showLoadingDialog(context, "Vui Lòng Đợi...!");
+      LoadingDialog.showLoadingDialog(context, "Đang Đăng Nhập...");
       bloc.Login(_userController.text, _passController.text,
           (user){
-        LoadingDialog.hideLoadingDialog(context);
+            LoadingDialog.hideLoadingDialog(context);
         print("Login voi ${user.uid}");
             Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_Home(user: user)));
           }, (err){
-        LoadingDialog.hideLoadingDialog(context);
+            LoadingDialog.hideLoadingDialog(context);
         MsgDialog.showMsgDialog(context, "Thông Báo",err);
 
           });

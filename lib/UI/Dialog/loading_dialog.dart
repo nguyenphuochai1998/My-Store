@@ -1,27 +1,32 @@
+
 import 'package:flutter/material.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 class LoadingDialog{
+static void showLoadingDialog(BuildContext context,String msg){
+showDialog(context: context,barrierDismissible: false,
+builder:(context) => new Dialog(
+child: new Container(
+height: 200,
+width: 200,
+color: Color(0xFFA8DBA8),
+child: new Column(
+mainAxisAlignment: MainAxisAlignment.center,
+children: <Widget>[
+new CircularProgressIndicator(),
+Padding(
+padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+child: Text(
+msg,
+style: TextStyle(fontSize: 18,color: Colors.white),
 
-  static void showLoadingDialog(BuildContext context,String msg){
-    ProgressDialog _dialog = new ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
-    _dialog.style(
-        message: msg,
-        borderRadius: 10.0,
-        backgroundColor: Colors.white,
-        progressWidget: CircularProgressIndicator(),
-        elevation: 10.0,
-        insetAnimCurve: Curves.easeInOut,
-        progress: 0.0,
-        maxProgress: 100.0,
-        progressTextStyle: TextStyle(
-            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
-        messageTextStyle: TextStyle(
-            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600)
-    );
-    _dialog.show();
+),
+)
+],
+),
+),
+) );
 
-  }
-  static void hideLoadingDialog(BuildContext context){
-    Navigator.of(context).pop(LoadingDialog);
-  }
+}
+static void hideLoadingDialog(BuildContext context){
+Navigator.of(context).pop(LoadingDialog);
+}
 }

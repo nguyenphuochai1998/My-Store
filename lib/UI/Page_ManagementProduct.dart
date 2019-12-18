@@ -25,6 +25,7 @@ class _PageManagementProduct extends State<Page_ManagementProduct>{
   FireStoreUser storeUser = new FireStoreUser();
   @override
   Widget build(BuildContext context) {
+    BuildContext managementProductContext = context;
     Size _size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -64,6 +65,7 @@ class _PageManagementProduct extends State<Page_ManagementProduct>{
             ),
             Container(
               margin: EdgeInsets.only(top:92),
+
               // list product
               child: new StreamBuilder(
                 stream: Firestore.instance.collection('Stores').document(widget.user.uid).collection('product').snapshots(),
@@ -109,14 +111,11 @@ class _PageManagementProduct extends State<Page_ManagementProduct>{
                                 color: Colors.redAccent,
                                 icon: Icons.delete,
                                 onTap: (){
-                                  LoadingDialog.showLoadingDialog(context, "Đang xóa...!");
+
                                   storeUser.deleteProduct(userId: widget.user.uid,documentID: document.documentID,
                                   onSuccess: (txt){
-                                    LoadingDialog.hideLoadingDialog(context);
-                                    NotificationDialog.showNotificationDialog(context: context,
-                                        msg: txt,onClickOkButton: (){
-                                          Navigator.of(context).pop();
-                                          });
+                                    NotificationDialog.showNotificationDialog(msg: txt,onClickOkButton: (){},context: context);
+
                                   });
                                   print(document.documentID);
                                 },

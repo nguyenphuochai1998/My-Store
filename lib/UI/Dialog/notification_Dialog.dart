@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_dialog/easy_dialog.dart';
 class NotificationDialog{
   static void showNotificationDialog({BuildContext context,String msg,Function onClickOkButton}){
+    showDialog(context: context,builder:
     EasyDialog(
         closeButton: false,
         cornerRadius: 10.0,
@@ -31,12 +32,14 @@ class NotificationDialog{
                     bottomRight: Radius.circular(10.0))),
             child: FlatButton(
               onPressed: () {
+                Navigator.of(context).pop();
                 onClickOkButton();
-                },
+              },
               child: Text("Okay",
                 textScaleFactor: 1.3,
               ),),
           ),
-        ]).show(context);
+        ]).show(context)
+    );
   }
 }

@@ -24,7 +24,8 @@ dependencies:
   flutter_slidable: ^0.5.4
   flutter_barcode_scanner: ^0.1.7
   easy_dialog: ^1.0.5
-  progress_dialog: ^1.2.0
+  progress_dialog: ^1.1.0+1
+  bot_toast: ^2.2.0
 
 
 
@@ -55,6 +56,8 @@ flutter:
     - ic_user.png
     - ic_user2.png
     - ic_password.png
+    - ic_minus.png
+    - ic_plus.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
