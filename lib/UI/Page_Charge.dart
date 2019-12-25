@@ -1,4 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
+
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app_my_store/FireBase/FireStore.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +8,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_app_my_store/UI/Dialog/notification_Dialog.dart';
 import 'package:flutter_app_my_store/UI/Page_ChargeContinuity.dart';
 import 'package:flutter_app_my_store/UI/Page_ManagementProduct.dart';
+import 'package:flutter_app_my_store/UI/Page_Print.dart';
+
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+
+
 
 import 'Page_Home.dart';
 
@@ -23,6 +29,14 @@ class Page_Charge extends StatefulWidget{
 
 }
 class _PageChanrge extends State<Page_Charge> {
+  String _ip;
+
+
+  @override
+  void initState() {
+
+    super.initState();
+  }
 
   var _colors = [
     Colors.blue,
@@ -110,16 +124,13 @@ class _PageChanrge extends State<Page_Charge> {
     switch (index) {
       case 0 :
         {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_ChargeContinuity(user: widget.user)));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_ChargeContinuity(user: widget.user,isChargeDone: false,)));
 
         }
         break;
       case 1 :
         {
-          //quan ly hang hoa
-
-
-
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_Charge(user: widget.user)));
 
         }
         break;

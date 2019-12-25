@@ -31,6 +31,7 @@ class _PageCreateProduct extends State<Page_CreateProduct>{
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+
     return Scaffold(
         appBar: AppBar(
 
@@ -179,6 +180,7 @@ class _PageCreateProduct extends State<Page_CreateProduct>{
 
 
   }
+
   _onCreateProduct({Function(String) onSuccess,Function(String) onErr}){
     storeUser.addProduct(userId: widget.user.uid,
         name: _nameProductController.text,

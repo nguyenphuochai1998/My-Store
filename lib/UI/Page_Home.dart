@@ -1,10 +1,17 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:diacritic/diacritic.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app_my_store/FireBase/FireStore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_app_my_store/FireBase/Fire_Auth.dart';
+import 'package:flutter_app_my_store/UI/Dialog/Error_Dialog.dart';
 import 'package:flutter_app_my_store/UI/Dialog/notification_Dialog.dart';
+import 'package:flutter_app_my_store/UI/Dialog/yesNo_Dialog.dart';
+import 'package:flutter_app_my_store/UI/Page_%20ChargeHistory.dart';
 import 'package:flutter_app_my_store/UI/Page_Charge.dart';
+import 'package:flutter_app_my_store/UI/Page_Login.dart';
 import 'package:flutter_app_my_store/UI/Page_ManagementProduct.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
@@ -13,6 +20,7 @@ class Page_Home extends StatefulWidget{
 
   const Page_Home({Key key, this.user}) : super(key: key);
   final FirebaseUser user;
+
 
 
 
@@ -28,6 +36,7 @@ class _PageHomeState extends State<Page_Home>{
     Colors.amber,
     Colors.redAccent
 
+
   ];
   var _nameTag =[
     "Tính Tiền",
@@ -39,6 +48,7 @@ class _PageHomeState extends State<Page_Home>{
   var _icon =[
 
   ];
+  FireAuth fireA = new FireAuth();
 
 
 
@@ -49,6 +59,7 @@ class _PageHomeState extends State<Page_Home>{
     Size _size = MediaQuery.of(context).size;
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
 
           body: Container(
@@ -56,6 +67,7 @@ class _PageHomeState extends State<Page_Home>{
             width: _size.width,
             child: Stack(
               children: <Widget>[
+
 
                 Container(
                     width: _size.width,
@@ -111,6 +123,32 @@ class _PageHomeState extends State<Page_Home>{
 
                     child: MenuHome()
 
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 20),
+                  alignment: Alignment.topRight,
+                  child: IconButton(icon: Icon(Icons.lock_outline), onPressed: (){
+                    YesNoDialog.showNotificationDialog(
+                        context: context,
+                        msg: "bạn nuốn thoát?",
+                        onClickOkButton: (){
+                          fireA.auth.signOut().then((val){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_Login()));
+                          }).catchError((err){
+                            ErrorDialog.showErrorDialog(
+                                context: context,
+                              msg: err
+
+                            );
+                          });
+                        },
+                        onClickNoButton: (){
+
+                        },
+
+                    );
+
+                  }),
                 ),
 
 
@@ -190,13 +228,14 @@ class _PageHomeState extends State<Page_Home>{
         break;
       case 2 :
         {
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_ChargeHistory(user: widget.user)));
 
 
         }
         break;
       case 3 :
         {
-          /// khi bam vao friends
+
 
         }
         break;
@@ -206,6 +245,24 @@ class _PageHomeState extends State<Page_Home>{
         }
         break;
     }
+
+  }
+  String _printProduct({String txt1,String txt2,double txt3}){
+    String _txt=txt1;
+
+    for(int i=0;_txt.length < 20;i++){
+      _txt="${_txt} ";
+    }
+    _txt="${_txt}${txt2}";
+    for(int i=0;_txt.length < 25;i++){
+      _txt = "${_txt} ";
+    }
+    _txt="${_txt}${txt3/1000}k";
+    for(int i=0;_txt.length < 32;i++){
+      _txt="${_txt} ";
+    }
+    return _txt;
+
   }
 
 

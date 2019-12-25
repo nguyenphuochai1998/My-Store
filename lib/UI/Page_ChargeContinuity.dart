@@ -9,6 +9,7 @@ import 'package:flutter_app_my_store/UI/Dialog/notification_Dialog.dart';
 import 'package:flutter_app_my_store/UI/PageEditProduct.dart';
 import 'package:flutter_app_my_store/UI/Page_CreateProduct.dart';
 import 'package:flutter_app_my_store/UI/Page_Home.dart';
+import 'package:flutter_app_my_store/UI/Page_Print.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -17,8 +18,9 @@ import 'Dialog/yesNo_Dialog.dart';
 import 'Page_Charge.dart';
 class Page_ChargeContinuity extends StatefulWidget{
 
-  const Page_ChargeContinuity({Key key, this.user}) : super(key: key);
+  const Page_ChargeContinuity({Key key, this.user,this.isChargeDone}) : super(key: key);
   final FirebaseUser user;
+  final bool isChargeDone;
 
 
 
@@ -30,15 +32,68 @@ class _PageChargeContinuity extends State<Page_ChargeContinuity>{
   String _barCode;
   FireStoreUser storeUser = new FireStoreUser();
   static String _bCode;
+  double _total;
   @override
   void initState() {
+    if(widget.isChargeDone == true){
+      Future.delayed(Duration.zero,() {
+        YesNoDialog.showNotificationDialog(context: context
+            ,msg: "tính tiền"
+            ,onClickOkButton: (){
+              LoadingDialog.showLoadingDialog(context,"Đang tính tiền..");
+              storeUser.ChangeBill(
+                  userId: widget.user.uid,
+                  total:_total,
+                  onSuccess: (txt){
+                    LoadingDialog.hideLoadingDialog(context);
+
+                    NotificationDialog.showNotificationDialog(
+                        msg: txt,
+                        context: context,
+                        onClickOkButton: (){
+                          // delete this bill
+                          storeUser.CancelBill(
+                              userId: widget.user.uid,
+                              onErr: (txt){
+
+                              },
+                              onSuccess: (txt){
+                                print(txt);
+                              }
+                          );
+
+                        }
+                    );
+
+
+                  },
+                  onErr: (txt){
+                    LoadingDialog.hideLoadingDialog(context);
+
+                    ErrorDialog.showErrorDialog(
+                        context: context,
+                        msg: txt
+                    );
+                  }
+
+              );
+
+
+
+            }
+            ,onClickNoButton: (){}
+        );
+      });
+    }
+
+
 
 
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    double _total;
+
     Size _size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -202,48 +257,60 @@ class _PageChargeContinuity extends State<Page_ChargeContinuity>{
                           height: 50,
                           child: RaisedButton(
                             onPressed: (){
-                              YesNoDialog.showNotificationDialog(context: context
-                                  ,msg: "tính tiền"
-                                  ,onClickOkButton: (){
-                                    LoadingDialog.showLoadingDialog(context,"Đang tính tiền..");
-                                    storeUser.ChangeBill(
-                                      userId: widget.user.uid,
-                                      total:_total,
-                                      onSuccess: (txt){
-                                        LoadingDialog.hideLoadingDialog(context);
+                              YesNoDialog.showNotificationDialog(
+                                context: context,
+                                msg: "Bạn có muốn In?",
+                                onClickNoButton: (){
+                                  YesNoDialog.showNotificationDialog(context: context
+                                      ,msg: "tính tiền"
+                                      ,onClickOkButton: (){
+                                        LoadingDialog.showLoadingDialog(context,"Đang tính tiền..");
+                                        storeUser.ChangeBill(
+                                            userId: widget.user.uid,
+                                            total:_total,
+                                            onSuccess: (txt){
+                                              LoadingDialog.hideLoadingDialog(context);
 
-                                        NotificationDialog.showNotificationDialog(
-                                          msg: txt,
-                                          context: context,
-                                          onClickOkButton: (){
-                                            storeUser.CancelBill(
-                                                userId: widget.user.uid,
-                                                onErr: (txt){
+                                              NotificationDialog.showNotificationDialog(
+                                                  msg: txt,
+                                                  context: context,
+                                                  onClickOkButton: (){
+                                                    // delete this bill
+                                                    storeUser.CancelBill(
+                                                        userId: widget.user.uid,
+                                                        onErr: (txt){
 
-                                                },
-                                                onSuccess: (txt){
+                                                        },
+                                                        onSuccess: (txt){
+                                                          print(txt);
+                                                        }
+                                                    );
 
-                                                }
-                                            );
-                                          }
+                                                  }
+                                              );
+
+
+                                            },
+                                            onErr: (txt){
+                                              LoadingDialog.hideLoadingDialog(context);
+
+                                              ErrorDialog.showErrorDialog(
+                                                  context: context,
+                                                  msg: txt
+                                              );
+                                            }
+
                                         );
 
 
-                                      },
-                                      onErr: (txt){
-                                        LoadingDialog.hideLoadingDialog(context);
 
-                                        ErrorDialog.showErrorDialog(
-                                          context: context,
-                                          msg: txt
-                                        );
                                       }
-
-                                    );
-
-
-                                  }
-                                  ,onClickNoButton: (){}
+                                      ,onClickNoButton: (){}
+                                  );
+                                },
+                                onClickOkButton: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_Print(user: widget.user)));
+                                }
                               );
                             },
                             child: Text(

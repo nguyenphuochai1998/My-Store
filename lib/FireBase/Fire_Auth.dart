@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 class FireAuth{
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
    FirebaseUser User;
 
 
@@ -11,7 +11,7 @@ class FireAuth{
 
   void Register(String name,String phone,String email,String pass
       ,Function onSuccess,Function(String) onRegisterErr){
-    _auth.createUserWithEmailAndPassword(email: email, password: pass)
+    auth.createUserWithEmailAndPassword(email: email, password: pass)
         .then((user) async {
 
           UserUpdateInfo userUpdateInfo = UserUpdateInfo();
@@ -56,7 +56,7 @@ class FireAuth{
 
   }
   void Login(String user,String pass,Function(FirebaseUser) onSuccsess,Function(String) onErr){
-    _auth.signInWithEmailAndPassword(email: user, password: pass)
+    auth.signInWithEmailAndPassword(email: user, password: pass)
         .then((user){
 
           User = user.user;
@@ -78,6 +78,10 @@ class FireAuth{
         break;
       case "ERROR_WRONG_PASSWORD" :
         onLoginErr("Có lẽ mật khẩu không đúng vui lòng kiểm tra lại!");
+        break;
+
+      case "ERROR_USER_NOT_FOUND" :
+        onLoginErr("Không có tài khoảng này trên hệ thống");
         break;
 
     }

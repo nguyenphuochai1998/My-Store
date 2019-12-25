@@ -28,6 +28,7 @@ class _PageManagementProduct extends State<Page_ManagementProduct>{
     BuildContext managementProductContext = context;
     Size _size = MediaQuery.of(context).size;
     return Scaffold(
+
       appBar: AppBar(
         leading: new Container(
           child: IconButton(
@@ -68,7 +69,7 @@ class _PageManagementProduct extends State<Page_ManagementProduct>{
 
               // list product
               child: new StreamBuilder(
-                stream: Firestore.instance.collection('Stores').document(widget.user.uid).collection('product').snapshots(),
+                stream: Firestore.instance.collection('Stores').document(widget.user.uid).collection('product').orderBy("name", descending: false).snapshots(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
                   if (snapshot.hasError)
                     return new Text('Error: ${snapshot.error}');
