@@ -2,7 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_my_store/FireBase/Fire_Auth.dart';
 import 'package:flutter_app_my_store/UI/Dialog/Error_Dialog.dart';
+import 'package:flutter_app_my_store/UI/Dialog/ResetPass_Dialog.dart';
 import 'package:flutter_app_my_store/UI/Dialog/loading_dialog.dart';
+import 'package:flutter_app_my_store/UI/Dialog/notification_Dialog.dart';
 import 'package:flutter_app_my_store/UI/Page_Home.dart';
 import 'package:flutter_app_my_store/UI/Page_Register.dart';
 import 'package:flutter_app_my_store/Bloc/Login_bloc.dart';
@@ -37,6 +39,7 @@ class _PageLoginState extends State<Page_Login>{
   @override
   Widget build(BuildContext context) {
      return MaterialApp(
+       debugShowCheckedModeBanner: false,
        home: Scaffold(
 
          body: Container(
@@ -75,7 +78,7 @@ class _PageLoginState extends State<Page_Login>{
 
                            style: TextStyle(fontSize: 18, color: Color(0xFFA8DBA8)),
                            decoration: InputDecoration(
-                               labelText: "Email hoặc SĐT",
+                               labelText: "Email",
                                errorText: snapshot.hasError ? snapshot.error:null,
                                prefixIcon: Container(
                                    padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
@@ -111,10 +114,41 @@ class _PageLoginState extends State<Page_Login>{
                      alignment: AlignmentDirectional.centerEnd,
                      child: Padding(
                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                       child: Text(
-                         "Quên Mật Khẩu?",
-                         style: TextStyle(fontSize: 16, color: Color(0xff606470)),
-                       ),
+                       child:FlatButton(
+                         child: Text(
+                           "Quên mật khẩu ? ",
+                           style: TextStyle(color: Colors.redAccent, fontSize: 16),
+                         ),
+                         onPressed: (){
+                           LoadingDialog.showLoadingDialog(context, "đang gủi lại mật khẩu...");
+                           ResetPassDialog.showResetPassDialog(
+                               context: context,
+                               onClickOkButton: (email){
+                                 print(email);
+
+                                 fireA.auth.sendPasswordResetEmail(email: email).then((val){
+                                   LoadingDialog.hideLoadingDialog(context);
+                                   NotificationDialog.showNotificationDialog(
+                                     context: context,
+                                     msg: "Mật khẩu mới đã gửi tới email của bạn",
+                                   );
+                                 }).then((err){
+                                   LoadingDialog.hideLoadingDialog(context);
+                                   print(err);
+                                   ErrorDialog.showErrorDialog(
+                                       msg: "Đã có lỗi trong quá trình gửi lại mật khẩu!",
+                                       context: context
+                                   );
+                                 });
+                               },
+                             onClickNoButton: (){
+                               LoadingDialog.hideLoadingDialog(context);
+                             }
+                           );
+                         },
+                       )
+
+
                      ),
                    ),
                    Padding(
@@ -175,7 +209,17 @@ class _PageLoginState extends State<Page_Login>{
 
             LoadingDialog.hideLoadingDialog(context);
             print("Login voi ${user.uid}");
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_Home(user: user)));
+            if(user.isEmailVerified == true) {
+              print(user.isEmailVerified);
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_Home(user: user)));
+            }else{
+              user.sendEmailVerification();
+              ErrorDialog.showErrorDialog(
+                context: context,
+                msg: "vui lòng truy cập gmail và xác thực tài khoản để sử dụng ứng dụng này"
+              );
+            }
+
           }, (err){
             LoadingDialog.hideLoadingDialog(context);
             ErrorDialog.showErrorDialog(context: context,msg: err);

@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app_my_store/FireBase/FireStore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_app_my_store/UI/Dialog/Error_Dialog.dart';
+import 'package:flutter_app_my_store/UI/Dialog/ImportProduct_Dialog.dart';
 import 'package:flutter_app_my_store/UI/Dialog/loading_dialog.dart';
 import 'package:flutter_app_my_store/UI/Dialog/notification_Dialog.dart';
 import 'package:flutter_app_my_store/UI/PageEditProduct.dart';
@@ -95,15 +97,49 @@ class _PageManagementProduct extends State<Page_ManagementProduct>{
                             ),
                             actions: <Widget>[
                               IconSlideAction(
+                                caption: 'Nhập hàng',
+                                color: Colors.blue,
+                                icon: Icons.archive,
+                                onTap: (){
+                                  ImportProductDialog.showImportProductDialog(
+                                    context: context,
+                                    txtMsg: document['name'],
+                                    onClickOkButton: (txt){
+
+                                      LoadingDialog.showLoadingDialog(context, "Đang thêm..");
+                                      storeUser.ImportOfProduct(userId: widget.user.uid,quantityUpdate: int.parse(txt),quantityNow: document['quantity']
+                                        ,documentID: document.documentID
+                                        ,onErr: (txt){
+                                        LoadingDialog.hideLoadingDialog(context);
+                                        ErrorDialog.showErrorDialog(
+                                          context: context,
+                                          msg: txt
+                                        );
+                                          },
+                                      onSuccess: (txt){
+                                        LoadingDialog.hideLoadingDialog(context);
+                                        NotificationDialog.showNotificationDialog(
+                                          msg: txt,
+                                          context: context
+                                        );
+                                      }
+                                      );
+                                    }
+                                  );
+
+                                },
+                              ),
+                              IconSlideAction(
                                 caption: 'Sửa Mặt hàng',
                                 color: Colors.green,
-                                icon: Icons.archive,
+                                icon: Icons.edit,
                                 onTap: (){
                                   // edit product
 
                                   Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_EditProduct(user: widget.user,doc: document)));
                                 },
                               ),
+
 
                             ],
                             secondaryActions: <Widget>[

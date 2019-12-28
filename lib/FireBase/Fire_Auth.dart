@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 class FireAuth{
   final FirebaseAuth auth = FirebaseAuth.instance;
+
+
    FirebaseUser User;
 
 
@@ -85,5 +87,40 @@ class FireAuth{
         break;
 
     }
+  }
+  void ChangePassUser({FirebaseUser thisUser,String passNew,String passNewAgain,Function(String) onSuccess,Function(String) onErr}){
+    print(passNew);
+    if(passNew.length <6){
+      onErr("mật khẩu mới phải hơn 6 kí tự");
+
+    }else{
+      print(thisUser.email);
+      if(passNew.compareTo(passNewAgain)==0){
+        print(User.uid);
+        thisUser.updatePassword(passNew).then((val){
+          print("");
+          onSuccess("Đổi mật khẩu thành công");
+        }).catchError((err){
+          print(err);
+          onErr(err);
+        });
+      }else{
+        onErr("mật khẩu nhập lại và mật khẩu không giống nhau");
+      }
+    }
+
+  }
+  Future<void> resetPassword(String email) async {
+    await auth.sendPasswordResetEmail(email: email);
+  }
+  void ChangeNameUser({String name,Function(String) onS,FirebaseUser user}){
+
+    UserUpdateInfo updateInfo = new UserUpdateInfo();
+    updateInfo.displayName = name;
+    user.updateProfile(updateInfo).catchError((err){
+      print(err);
+    });
+    print(user.displayName);
+    onS("Đã đổi tên thành công!");
   }
 }

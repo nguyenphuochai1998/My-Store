@@ -39,6 +39,8 @@ dependencies:
 
 
 
+
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -68,6 +70,12 @@ flutter:
     - ic_password.png
     - ic_minus.png
     - ic_plus.png
+    - backgroud_home.jpg
+    - ic_history.png
+    - ic_about.png
+    - ic_product.png
+    - ic_payment.png
+    - ic_logout.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

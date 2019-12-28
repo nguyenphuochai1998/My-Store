@@ -10,12 +10,13 @@ import 'package:flutter_app_my_store/UI/PageEditProduct.dart';
 import 'package:flutter_app_my_store/UI/Page_CreateProduct.dart';
 import 'package:flutter_app_my_store/UI/Page_Home.dart';
 import 'package:flutter_app_my_store/UI/Page_Print.dart';
+import 'package:flutter_app_my_store/UI/Page_SearchProduct.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
 import 'Dialog/yesNo_Dialog.dart';
-import 'Page_Charge.dart';
+
 class Page_ChargeContinuity extends StatefulWidget{
 
   const Page_ChargeContinuity({Key key, this.user,this.isChargeDone}) : super(key: key);
@@ -98,10 +99,19 @@ class _PageChargeContinuity extends State<Page_ChargeContinuity>{
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_SearchProduct(user: widget.user)));
+            },
+
+          )
+        ],
         leading: new Container(
           child: IconButton(
             onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_Charge(user: widget.user)));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_Home(user: widget.user)));
             },
             icon: Icon(Icons.arrow_back),
           ),
@@ -206,16 +216,23 @@ class _PageChargeContinuity extends State<Page_ChargeContinuity>{
                                   color: Colors.redAccent,
                                   icon: Icons.delete,
                                   onTap: (){
-                                    LoadingDialog.showLoadingDialog(context, "Đang xóa..");
-                                    storeUser.deleteProduct(userId: widget.user.uid,documentID: document.documentID,
-                                        onSuccess: (txt){
-                                          LoadingDialog.hideLoadingDialog(context);
-                                          NotificationDialog.showNotificationDialog(context: context,
-                                              msg: txt,onClickOkButton: (){
-                                                Navigator.of(context).pop();
-                                              });
-                                        });
-                                    print(document.documentID);
+                                    YesNoDialog.showNotificationDialog(
+                                        msg: "Bạn muốn xóa mặt hàng này ?",
+                                        context: context,
+                                        onClickOkButton: (){
+                                          storeUser.deleteProductBill(
+                                              userId: widget.user.uid,
+                                              docID: document.documentID,
+                                              onS: (val){
+                                                NotificationDialog.showNotificationDialog(
+                                                    context: context,
+                                                    msg: val
+                                                );
+                                              }
+                                          );
+                                        }
+                                    );
+
                                   },
                                 ),
                               ],
@@ -232,16 +249,19 @@ class _PageChargeContinuity extends State<Page_ChargeContinuity>{
                 child: StreamBuilder(
                   stream: Firestore.instance.collection('Stores').document(widget.user.uid).collection('currentBill').snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-                    double _sum=0;
+                    double _sum = 0;
                     snapshot.data.documents.map((DocumentSnapshot document){
                       _sum = _sum + (document['product']['price'] * document['quantity']);
                     }).toList();
                       _total = _sum;
 
 
-                    return Text("Tổng Cộng: ${_sum}VNĐ",
+                    return _sum != null ? Text("Tổng Cộng: ${_sum}VNĐ",
                         textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.blue,));
+                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.blue,)):
+                    Text("Tổng Cộng: 0 VNĐ",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.blue,));
                   }
                 )
               ),
@@ -288,8 +308,6 @@ class _PageChargeContinuity extends State<Page_ChargeContinuity>{
 
                                                   }
                                               );
-
-
                                             },
                                             onErr: (txt){
                                               LoadingDialog.hideLoadingDialog(context);
@@ -299,11 +317,7 @@ class _PageChargeContinuity extends State<Page_ChargeContinuity>{
                                                   msg: txt
                                               );
                                             }
-
                                         );
-
-
-
                                       }
                                       ,onClickNoButton: (){}
                                   );

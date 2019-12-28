@@ -9,7 +9,7 @@ class LoadingDialog {
         backgroundColor: Colors.transparent,
         child: Container(
           color: Color(0xffffffff),
-          height: 100,
+          height: 150,
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -79,6 +79,42 @@ class FireStoreUser{
       }
     });
   }
+  void ChargeWithName({String userId,String nameProduct,Function(String) onSuccess,Function(String) onErr}){
+    Firestore.instance.collection('Stores').document(userId).collection('currentBill').where("name",isEqualTo: nameProduct).getDocuments()
+        .then((val){
+      if(val.documents.length >= 1){
+
+        val.documents.map((DocumentSnapshot document){
+          int _quantity;
+          _quantity = document['quantity']+1;
+
+          Firestore.instance.collection('Stores').document(userId).collection('currentBill').document(document.documentID).updateData({ 'quantity': _quantity});
+
+        }).toList();
+      }else{
+        _db.collection('Stores').document(userId).collection('product').where("name",isEqualTo: nameProduct).getDocuments()
+            .then((QuerySnapshot docs){
+          if(docs.documents.length != 0){
+            print("co san pham");
+            docs.documents.map((DocumentSnapshot document){
+              var product = {
+                'product':document.data,
+                'quantity':1,
+                'qrCode':""
+              };
+
+              _db.collection('Stores').document(userId).collection('currentBill').document().setData(product);
+              onSuccess("Thêm ${document['name']} vào đơn hàng thành công");
+            }).toList();
+          }else{
+            onErr("Mặt hàng có mã vạch này hiện chưa có trong cửa hàng!");
+
+          }
+        });
+
+      }
+    });
+  }
   void ChargeWithQrCode({String userId,String QrCode,Function(String,DocumentSnapshot) onSuccess,Function(String) onErr}){
     Firestore.instance.collection('Stores').document(userId).collection('currentBill').where("qrCode",isEqualTo: QrCode).getDocuments()
     .then((val){
@@ -199,5 +235,61 @@ class FireStoreUser{
       }
     });
   }
+  Future<List> searchProduct({String search,String userId}) async {
+    var _listProduct=[];
+     await Firestore.instance.collection('Stores').document(userId).collection('product').orderBy("name", descending: false).startAt([search]).getDocuments().then((QuerySnapshot docs){
+       docs.documents.map((DocumentSnapshot document) async {
+         print(document.data);
+         await _listProduct.add(document.data);
+       }).toList();
+     });
+
+    print(_listProduct.length);
+     return _listProduct;
+  }
+  void deleteBillHistory({String docID,String userId,Function(String) onErr(String),Function(String) onS}){
+    Firestore.instance.collection('Stores').document(userId).collection('BillsHistory').document(docID).delete().then((val){
+      onS("xóa thành công");
+    }).catchError((err){
+      onErr("đã xãy ra lỗi khi xóa");
+    });
+  }
+  void deleteProductBill({String docID,String userId,Function(String) onErr(String),Function(String) onS}){
+    Firestore.instance.collection('Stores').document(userId).collection('currentBill').document(docID).delete().then((val){
+      onS("xóa thành công");
+    }).catchError((err){
+      onErr("đã xãy ra lỗi khi xóa");
+    });
+  }
+  void Report({String reportTxt,String userName,String userId,Function(String) onSuccess,Function(String) onErr}){
+    var now = new DateTime.now();
+    var err = {
+      'user name':userName,
+      'id':userId,
+      'err':reportTxt,
+      'time':now
+    };
+    Firestore.instance.collection('ReportErrorApp').document().setData(err);
+      onSuccess("Đã gửi thành công, cảm ơn bạn đã báo cáo với chúng tôi!");
+
+
+
+  }
+  void ImportOfProduct({String userId,int quantityNow,int quantityUpdate,Function(String) onSuccess,Function(String) onErr,String documentID}){
+    if(quantityUpdate <=0){
+      onErr("Không thể để hàng hóa thêm vào nhỏ hơn hoặc bằng 0");
+    }else{
+      _db.collection('Stores').document(userId).collection('product').document(documentID).updateData({'quantity': quantityNow+quantityUpdate })
+          .then((val){
+        onSuccess("nhập hàng hóa thành công!");
+      }).catchError((err){
+        onErr(err){
+
+        }
+      });
+    }
+
+  }
+
 
 }

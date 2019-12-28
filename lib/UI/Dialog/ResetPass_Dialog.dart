@@ -1,32 +1,47 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_dialog/easy_dialog.dart';
-class YesNoDialog{
-  static void showNotificationDialog({BuildContext context,String msg,Function onClickOkButton,Function onClickNoButton,Color colorMsg}){
+import 'package:flutter_app_my_store/FireBase/Fire_Auth.dart';
+import 'package:flutter_app_my_store/UI/Dialog/Error_Dialog.dart';
+import 'package:flutter_app_my_store/UI/Dialog/loading_dialog.dart';
+import 'package:flutter_app_my_store/UI/Dialog/notification_Dialog.dart';
+class ResetPassDialog{
+
+  static void showResetPassDialog({BuildContext context,Function(String) onClickOkButton,Function onClickNoButton}){
+    final TextEditingController _emailController = TextEditingController();
     showDialog(context: context,builder:
     EasyDialog(
         closeButton: false,
         cornerRadius: 10.0,
         fogOpacity: 0.1,
         width: 280,
-        height: 200,
+        height: 280,
         title: Text(
-          "Thông Báo!",
-          style: TextStyle(fontWeight: FontWeight.bold,color: colorMsg),
+          "Quên mật khẩu !",
+          style: TextStyle(fontWeight: FontWeight.bold,color: Colors.amber),
           textScaleFactor: 1.2,
 
         ),
-        descriptionPadding:
-        EdgeInsets.only(left: 17.5, right: 17.5, bottom: 15.0),
-        description: Text(
-            msg
-            ,
-          style: TextStyle(color: colorMsg),
-        ),
         // Needed for the button design
         contentList: [
+          TextField(
+            controller: _emailController,
+
+            style: TextStyle(fontSize: 18, color: Color(0xFFA8DBA8)),
+            decoration: InputDecoration(
+                labelText: "Email",
+                prefixIcon: Container(
+                    padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
+                    width: 50, child: Image.asset("ic_user.png")),
+                border: OutlineInputBorder(
+                    borderSide:
+                    BorderSide(color: Color(0xFFA8DBA8), width: 1),
+                    borderRadius: BorderRadius.all(Radius.circular(6)))),
+          ),
+
           Container(
             width: 244,
-            height: 45.0,
+            height: 150,
             child: SizedBox(
                 width: double.infinity,
                 child: Row(
@@ -37,10 +52,10 @@ class YesNoDialog{
                       child: RaisedButton(
                         onPressed: (){
                           Navigator.of(context).pop();
-                          onClickOkButton();
+                          onClickOkButton(_emailController.text);
                         },
                         child: Text(
-                          "Đồng ý",
+                          "Lấy MK",
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                         color: Colors.green,

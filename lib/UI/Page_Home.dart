@@ -7,13 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_my_store/FireBase/Fire_Auth.dart';
 import 'package:flutter_app_my_store/UI/Dialog/Error_Dialog.dart';
-import 'package:flutter_app_my_store/UI/Dialog/notification_Dialog.dart';
+
 import 'package:flutter_app_my_store/UI/Dialog/yesNo_Dialog.dart';
 import 'package:flutter_app_my_store/UI/Page_%20ChargeHistory.dart';
-import 'package:flutter_app_my_store/UI/Page_Charge.dart';
+import 'package:flutter_app_my_store/UI/Page_About.dart';
 import 'package:flutter_app_my_store/UI/Page_Login.dart';
 import 'package:flutter_app_my_store/UI/Page_ManagementProduct.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+
+
+import 'Page_ChargeContinuity.dart';
 
 
 class Page_Home extends StatefulWidget{
@@ -37,18 +39,26 @@ class _PageHomeState extends State<Page_Home>{
     Colors.redAccent
 
 
+
   ];
   var _nameTag =[
     "Tính Tiền",
     "Quản Lý Hàng Hóa",
     "Lịch Sử Bán Hàng",
-    "Sổ Nợ"
+    "Thông tin App"
+
 
   ];
-  var _icon =[
+  List<String> _icon =[
+    "ic_payment.png",
+    "ic_product.png",
+    "ic_history.png",
+    "ic_about.png"
+
 
   ];
   FireAuth fireA = new FireAuth();
+  double _total;
 
 
 
@@ -57,21 +67,24 @@ class _PageHomeState extends State<Page_Home>{
 
 
     Size _size = MediaQuery.of(context).size;
+    DateTime now = DateTime.now();
+
+    DateTime start = DateTime(now.year, now.month, now.day, 0, 0);
+    DateTime end = DateTime(now.year, now.month, now.day, 23, 59, 59);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+
 
           body: Container(
             height: _size.height,
             width: _size.width,
             child: Stack(
               children: <Widget>[
-
-
                 Container(
                     width: _size.width,
-                    height: _size.height/3,
+                    height: _size.height/2.7,
 
 
                     decoration: BoxDecoration(
@@ -79,56 +92,77 @@ class _PageHomeState extends State<Page_Home>{
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30),bottomRight: Radius.circular(30)),
                         color: Color(0xFF33B958)
                     ),
-                    child: new Column(
+                    child: new ClipRRect(
+                      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30),bottomRight: Radius.circular(30)),
+                      child: Image(
+                        image: AssetImage("backgroud_home.jpg"),
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                ),
+                new Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: _size.height/7,
+                    ),
+                    Text(
+                      "Xin Chào ${widget.user.displayName}",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.lightGreenAccent,
+
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.italic
+
+                      ),
+                    ),
+
+                    Row(
                       children: <Widget>[
-                        SizedBox(
-                          height: _size.height/16,
-                        ),
-                        Text(
-                          "Xin Chào ${widget.user.displayName}",
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Color(0xFFffffff),
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(2, 10, 0, 10),
+                            child: StreamBuilder(
+                                stream:  Firestore.instance.collection('Stores').document(widget.user.uid).collection('BillsHistory').where('time', isGreaterThanOrEqualTo: start,isLessThanOrEqualTo: end).snapshots(),
+                                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                                  double _sum = 0;
+                                  snapshot.data.documents.map((DocumentSnapshot document){
+                                    _sum = _sum + document['total'];
+                                  }).toList();
+                                  _total = _sum;
 
-                              fontWeight: FontWeight.w700,
-                              fontStyle: FontStyle.italic
 
-                          ),
-                        ),
-
-                        Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(2, 10, 0, 10),
-                              child: Text(
-                                "Doanh Thu Hôm Nay: 0Đ",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Color(0xFFffffff),
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w700
-
-                                ),
-                              ),
+                                  return _sum != null ? Text("Doanh thu hôm nay: ${_sum}VNĐ",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.white,)):
+                                  Text("Doanh thu hôm nay: 0 VNĐ",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.white,));
+                                }
                             )
-                          ],
                         )
-
                       ],
                     )
 
+                  ],
                 ),
+
+
+
                 Container(
-                    margin: EdgeInsets.only(top:_size.height/3),
+                    margin: EdgeInsets.only(top:_size.height/2.7),
 
                     child: MenuHome()
 
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 20),
+                  margin: EdgeInsets.only(top: _size.height/3,),
                   alignment: Alignment.topRight,
-                  child: IconButton(icon: Icon(Icons.lock_outline), onPressed: (){
-                    YesNoDialog.showNotificationDialog(
+
+                  child: FlatButton(
+                    child: Image.asset("ic_logout.png", height: 50, width: 50,),
+                    onPressed: (){
+
+                      YesNoDialog.showNotificationDialog(
                         context: context,
                         msg: "bạn nuốn thoát?",
                         onClickOkButton: (){
@@ -137,7 +171,7 @@ class _PageHomeState extends State<Page_Home>{
                           }).catchError((err){
                             ErrorDialog.showErrorDialog(
                                 context: context,
-                              msg: err
+                                msg: err
 
                             );
                           });
@@ -146,10 +180,11 @@ class _PageHomeState extends State<Page_Home>{
 
                         },
 
-                    );
-
-                  }),
+                      );
+                    },
+                  )
                 ),
+
 
 
               ],
@@ -191,7 +226,7 @@ class _PageHomeState extends State<Page_Home>{
                     SizedBox(
                       height: 20.0,
                     ),
-                    Image.asset("ic_store.png", height: 70.0, width: 70.0,),
+                    Image.asset(_icon[index], height: 70.0, width: 70.0,),
 
                     Padding(
                       padding: EdgeInsets.all(10.0),
@@ -213,7 +248,7 @@ class _PageHomeState extends State<Page_Home>{
       case 0 :
         {
             // tinh tien
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_Charge(user: widget.user)));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_ChargeContinuity(user: widget.user,isChargeDone: false,)));
         }
         break;
       case 1 :
@@ -235,6 +270,7 @@ class _PageHomeState extends State<Page_Home>{
         break;
       case 3 :
         {
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>Page_About(user: widget.user)));
 
 
         }
@@ -247,23 +283,7 @@ class _PageHomeState extends State<Page_Home>{
     }
 
   }
-  String _printProduct({String txt1,String txt2,double txt3}){
-    String _txt=txt1;
 
-    for(int i=0;_txt.length < 20;i++){
-      _txt="${_txt} ";
-    }
-    _txt="${_txt}${txt2}";
-    for(int i=0;_txt.length < 25;i++){
-      _txt = "${_txt} ";
-    }
-    _txt="${_txt}${txt3/1000}k";
-    for(int i=0;_txt.length < 32;i++){
-      _txt="${_txt} ";
-    }
-    return _txt;
-
-  }
 
 
 

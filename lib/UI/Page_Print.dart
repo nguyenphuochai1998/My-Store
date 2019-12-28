@@ -79,18 +79,22 @@ class _PagePrint extends State<Page_Print> {
 
   }
   String _printCenter(String txt){
-    String _txt=txt;
-    for(int i=0;i < (32 - txt.length)/2;i++){
-      _txt = " ${_txt}";
+    if(txt.length > 32){
+      return "${txt}\n";
+    }else{
+      String _txt=txt;
+      for(int i=0;i < (32 - txt.length)/2;i++){
+        _txt = " ${_txt}";
+      }
+      return "${_txt}\n";
     }
-    return "${_txt}\n";
   }
 
   _print() async {
     var now = new DateTime.now();
     String _printTxt="";
     double _sum=0;
-    _printTxt = _printTxt + "\n\n\n";
+    _printTxt = _printTxt + "\n\n";
     _printTxt = _printTxt + "${removeDiacritics(_printCenter(widget.user.displayName))}\n";
     _printTxt = _printTxt + "${removeDiacritics(_printCenter("Phieu tinh tien"))}";
     _printTxt = _printTxt + "\n";
@@ -118,7 +122,8 @@ class _PagePrint extends State<Page_Print> {
       }).toList();
 
     });
-    _printTxt = _printTxt + "\nTong cong: ${_sum/1000}k VND\n";
+    _printTxt = _printTxt + "\nTong cong: ${_sum/1000}k VND\n\n";
+    _printTxt = _printTxt + _printCenter("Cam on quy khach");
     _printTxt = _printTxt + "\n\n\n";
     await Escposprinter.printText(_printTxt);
   }
@@ -126,9 +131,10 @@ class _PagePrint extends State<Page_Print> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: new Scaffold(
         appBar: new AppBar(
-          title: new Text('ESC POS'),
+          title: new Text('In hóa đơn'),
           actions: <Widget>[
             new IconButton(
                 icon: new Icon(Icons.refresh),

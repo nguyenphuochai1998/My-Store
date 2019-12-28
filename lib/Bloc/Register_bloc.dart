@@ -21,6 +21,10 @@ class RegisterBloc{
     if(name.length == 0){
       _nameController.sink.addError("Bạn Cần Nhập Tên!");
       return false;
+    }else{
+      if(name.length > 32){
+        _nameController.sink.addError("Bạn Nhập Tên dưới 32 kí tự!");
+        return false;}
     }
     _nameController.add("ok");
     if(!LoginRegisterValidato.isPhoneNumber(phone)){

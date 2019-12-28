@@ -1,29 +1,26 @@
-
 import 'dart:core';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_app_my_store/FireBase/FireStore.dart';
+import 'package:flutter_app_my_store/UI/Dialog/Error_Dialog.dart';
 import 'package:flutter_app_my_store/UI/Dialog/notification_Dialog.dart';
 import 'package:flutter_app_my_store/UI/Dialog/product_Dialog.dart';
+import 'package:flutter_app_my_store/UI/Dialog/yesNo_Dialog.dart';
 import 'package:flutter_app_my_store/UI/Page_Home.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-
 class Page_ChargeHistory extends StatefulWidget{
-
   const Page_ChargeHistory({Key key, this.user}) : super(key: key);
   final FirebaseUser user;
-
-
-
   @override
   _PageChargeHistory createState() => _PageChargeHistory();
 
 }
 class _PageChargeHistory extends State<Page_ChargeHistory>{
+  FireStoreUser storeUser = new FireStoreUser();
 
   @override
   void initState() {
@@ -37,12 +34,7 @@ class _PageChargeHistory extends State<Page_ChargeHistory>{
   }
   static DateTime pick=DateTime.now();
   static List _listProduct;
-
-
   bool _isBottomshow = false;
-
-
-
   @override
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();
@@ -50,12 +42,9 @@ class _PageChargeHistory extends State<Page_ChargeHistory>{
     DateTime start = DateTime(pick.year, pick.month, pick.day, 0, 0);
     DateTime end = DateTime(pick.year, pick.month, pick.day, 23, 59, 59);
     var _countBill = 0;
-
-
     Size _size = MediaQuery.of(context).size;
-
-
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           leading: new Container(
@@ -141,11 +130,9 @@ class _PageChargeHistory extends State<Page_ChargeHistory>{
                                       context: context,
                                       size: _size,
                                       onClickOkButton: (){},
-                                      list: _list
+                                      list: _list,
+                                      totalBill: document['total']
                                     );
-
-
-
                                   },
                                   leading: CircleAvatar(
                                     backgroundColor: Colors.green,
@@ -162,14 +149,28 @@ class _PageChargeHistory extends State<Page_ChargeHistory>{
                                   color: Colors.redAccent,
                                   icon: Icons.delete,
                                   onTap: (){
-
+                                    YesNoDialog.showNotificationDialog(
+                                      msg: "Bạn muốn xóa hóa đơn này ?",
+                                      context: context,
+                                      onClickOkButton: (){
+                                        storeUser.deleteBillHistory(
+                                          userId: widget.user.uid,
+                                          docID: document.documentID,
+                                          onS: (val){
+                                            NotificationDialog.showNotificationDialog(
+                                              context: context,
+                                              msg: val
+                                            );
+                                          }
+                                        );
+                                      }
+                                    );
                                   },
                                 ),
                               ],
                             );
                           }).toList(),
                         );
-
                     }
                   },
                 ),

@@ -7,7 +7,7 @@ class ErrorDialog{
         cornerRadius: 10.0,
         fogOpacity: 0.1,
         width: 280,
-        height: 150,
+        height: 180,
         title: Text(
           "Lỗi!",
           style: TextStyle(fontWeight: FontWeight.bold,color: Colors.redAccent),

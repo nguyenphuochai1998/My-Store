@@ -1,32 +1,46 @@
+
 import 'package:flutter/material.dart';
 import 'package:easy_dialog/easy_dialog.dart';
-class YesNoDialog{
-  static void showNotificationDialog({BuildContext context,String msg,Function onClickOkButton,Function onClickNoButton,Color colorMsg}){
+
+class ImportProductDialog{
+
+  static void showImportProductDialog({BuildContext context,Function(String) onClickOkButton,Function onClickNoButton,String txtMsg}){
+    final TextEditingController _RPController = TextEditingController();
     showDialog(context: context,builder:
     EasyDialog(
         closeButton: false,
         cornerRadius: 10.0,
         fogOpacity: 0.1,
         width: 280,
-        height: 200,
+        height: 340,
         title: Text(
-          "Thông Báo!",
-          style: TextStyle(fontWeight: FontWeight.bold,color: colorMsg),
+          "Nhập Mặt hàng : ${txtMsg}",
+          style: TextStyle(fontWeight: FontWeight.bold,color: Colors.amber),
           textScaleFactor: 1.2,
 
         ),
-        descriptionPadding:
-        EdgeInsets.only(left: 17.5, right: 17.5, bottom: 15.0),
-        description: Text(
-            msg
-            ,
-          style: TextStyle(color: colorMsg),
-        ),
         // Needed for the button design
         contentList: [
+          TextField(
+            maxLines: 1,
+            controller: _RPController,
+            keyboardType: TextInputType.number,
+
+            style: TextStyle(fontSize: 18, color: Color(0xFFA8DBA8)),
+            decoration: InputDecoration(
+                labelText:"Số lượng muốn thêm",
+                prefixIcon: Container(
+                    padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
+                    width: 50, child: Image.asset("ic_product.png")),
+                border: OutlineInputBorder(
+                    borderSide:
+                    BorderSide(color: Color(0xFFA8DBA8), width: 1),
+                    borderRadius: BorderRadius.all(Radius.circular(6)))),
+          ),
+
           Container(
             width: 244,
-            height: 45.0,
+            height: 150,
             child: SizedBox(
                 width: double.infinity,
                 child: Row(
@@ -37,10 +51,10 @@ class YesNoDialog{
                       child: RaisedButton(
                         onPressed: (){
                           Navigator.of(context).pop();
-                          onClickOkButton();
+                          onClickOkButton(_RPController.text);
                         },
                         child: Text(
-                          "Đồng ý",
+                          "Thêm",
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                         color: Colors.green,

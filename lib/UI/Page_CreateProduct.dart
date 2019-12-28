@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app_my_store/FireBase/FireStore.dart';
 import 'package:flutter_app_my_store/UI/Dialog/Error_Dialog.dart';
 import 'package:flutter_app_my_store/UI/Dialog/notification_Dialog.dart';
@@ -60,6 +61,7 @@ class _PageCreateProduct extends State<Page_CreateProduct>{
             Padding(
               padding: const EdgeInsets.fromLTRB(20,0, 20,0),
               child: TextField(
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
                 controller: _priceProductController,
 
                 style: TextStyle(fontSize: 18, color: Color(0xFFA8DBA8)),
@@ -78,6 +80,7 @@ class _PageCreateProduct extends State<Page_CreateProduct>{
             Padding(
               padding: const EdgeInsets.all(20),
               child: TextField(
+                keyboardType: TextInputType.number,
                 controller: _quantityProductController,
 
                 style: TextStyle(fontSize: 18, color: Color(0xFFA8DBA8)),
