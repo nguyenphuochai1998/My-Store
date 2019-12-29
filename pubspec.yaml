@@ -48,6 +48,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.7.4
+flutter_icons:
+  image_path: "assets/ic_launcher.png"
+  android: true
+
 
 
 # For information on the generic Dart part of this file, see the
@@ -76,6 +81,8 @@ flutter:
     - ic_product.png
     - ic_payment.png
     - ic_logout.png
+    - ic_launcher.png
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
