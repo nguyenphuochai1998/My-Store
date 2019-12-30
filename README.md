@@ -1,1 +1,0 @@
-<a href="https://drive.google.com/file/d/1HdS-0XnLVNOtR2ENN-cafW_afM8Qwk5i/view?usp=sharing"><img src="https://drive.google.com/file/d/1HdS-0XnLVNOtR2ENN-cafW_afM8Qwk5i/view?usp=sharing" title=""/></a>
